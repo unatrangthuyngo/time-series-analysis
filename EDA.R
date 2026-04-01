@@ -40,9 +40,12 @@ tlb_ts <- ts(tlb_df$TLB, start = 1960, frequency = 1)
 tfr_ts <- ts(tfr_df$TFR, start = 1960, frequency = 1)
 
 #EDA 
+summary(tlb_ts)
+summary(tfr_ts)
+
 #initial outlook of the variables to year 
-autoplot(tlb_ts)
-autoplot(tfr_ts)
+autoplot(tlb_ts) #long-term downward trend, seasonality does not seem obvious 
+autoplot(tfr_ts) #long-term dowanward trend, seasonality does not seem present 
 
 ggplot(df, aes (x= Year, y = TFR)) + 
   geom_line() + 
@@ -52,29 +55,49 @@ ggplot(df, aes (x= Year, y = TLB)) +
   geom_line() + 
   ggtitle("Total Live Births")
 
+#Trend analysis
+#moving average to comfirm downward trend
+
+
+
+#time series decomposition 
+#seasonality analysis 
+
+stl_decomp1 <- stl(tfr_ts, s.window = "periodic")
+plot(stl_decomp)
+
+stl_decomp2 <- stl(tlb_ts, s.window = "periodic")
+plot(stl_decomp)
+
+#STL
+tfr_ts |> model(stl = STL(TFR)) |> components() |> autoplot()
+
+
+#Because the data are annual, seasonal decomposition using STL is not appropriate. The series do not contain within-year seasonal structure, so the temporal analysis should focus instead on trend, stationarity, autocorrelation, and structural change.
+
+#Stationary analysis 
 #Difference to achieve stationary
 autoplot(diff(tlb_ts))
-autoplot(diff(diff(tlb_ts)))
 autoplot(diff(tfr_ts))
 
+#Correallation analysis
+#autocorrelation analysis
 #ACF and PACF plots
-
+Acf(diff(tfr_ts))
 Acf(diff(tlb_ts))
-Acf(tfr_ts)
-Pacf(diff(diff(tlb_ts)))
+Pacf(diff(tlb_ts))
 Pacf(diff(tfr_ts))
 
 diff(diff(tlb_ts)) |> Acf() |> autoplot()
 diff(diff(tfr_ts)) |> Acf() |> autoplot()
 
-
-
-#STL
-tfr_ts |> model(stl = STL(TFR)) |> components() |> autoplot()
+#Time series analysis 
 
 # Potential Time series model
+#given that 
+#Given certain parameters, which the time series data exihibits 
 
-#linear regression model with polynominal fitting
+#linear regression model with polynomial fitting
 #Ar model 
 #Arima model
 
@@ -83,3 +106,7 @@ model_tfr <-
 
 
 breakpoints(tfr_ts ~ 1)
+
+#Trend modelling
+#Stationarity (differencing)
+#ARIMA (non-seasonal)
