@@ -96,18 +96,12 @@ tfr_ts |> model(stl = STL(TFR)) |> components() |> autoplot()
 #Because the data are annual, seasonal decomposition using STL is not appropriate. The series do not contain within-year seasonal structure, so the temporal analysis should focus instead on trend, stationarity, autocorrelation, and structural change.
 acf(tlb_ts) # show non-stationarity 
 acf(tfr_ts) # shows non-stationarity
-pacf(tlb_ts)
-pacf(tfr_ts)
-#Box-cox analysis 
-#installed to assessthe need for varience stabilisation
-BoxCox.lambda(tlb_ts)
-BoxCox.lambda(tfr_ts)
+pacf(tlb_ts) # significant time autocorrelations spikes
+pacf(tfr_ts)# significant time autocorrelations spikes
 
-#potential log transformation on TLB and TFR 
+#potential log transformation on TLB  
 log_tlb <- log(tlb_ts)
-autoplot(log_tlb)
-log_tfr <- log(tfr_ts) 
-autoplot(log_tfr)
+
 #justified? driven from trend non-statioanrity, rather than change in varience, does not help change indicating te justification os using 
 
 #Stationary analysis 
@@ -117,38 +111,38 @@ adf.test(tfr_ts) #comfirms nonstationarity on raw data
 kpss.test(tfr_ts) #comfrims nonstatioanrity
 
 #tlb raw 
-adf.test(tlb_ts) #comfirms nonstatioanriy on raw data
+adf.test(tlb_ts) #comfirms stationanrity on raw data
 kpss.test(tlb_ts) #comfirms nonstationarity on raw data 
+#conflicting results in the test suggesting the implementation of a log transfrom 
+#apply a log transfrom only on TLB 
+log_tlb <- log(tlb_ts)
+adf.test(log_tlb) 
+kpss.test(log_tlb) 
+#To keep consistency in comparing TLB and TFR, both will be log transformed
+log_tfr <-log(tfr_ts)
+adf.test(log_tfr) 
+kpss.test(log_tfr)
 
-#conflicting results in the test suggesting the implementation 
-
+#applying first order differencing
 #tfr first order differencing
-adf.test(diff(tfr_ts)) 
-kpss.test(diff(tfr_ts))
+adf.test(diff(log_tfr)) 
+kpss.test(diff(log_tfr))
 
-autoplot(diff(tfr_ts))
+autoplot(diff(log_tfr))
 
 #tlb first order differencing
-adf.test(diff(tlb_ts))  
-kpss.test(diff(tlb_ts))
-autoplot(diff(tlb_ts))
+adf.test(diff(log_tlb))  
+kpss.test(diff(log_tlb))
 
-#Difference to achieve stationary(visualisation) 
-autoplot(diff(tlb_ts))
-autoplot(diff(tfr_ts))
-autoplot(diff(log(tlb_ts))) #statioanrity definitely improved from log transform
-autoplot(diff(log(tfr_ts))) #statioanrity is seen as similar 
-#comfirming stationarity is achieve through diffirencing
-adf.test(diff(tfr_ts)) #staionrity is achecived through first order diffrencing
-kpss.test(diff(tfr_ts))
+autoplot(diff(log_tlb))
 
-adf.test(diff(tlb_ts))
-kpss.test
+
 #Correlation analysis
 #autocorrelation analysis
 #ACF and PACF plots
 Acf(diff(tfr_ts))
 Acf(diff(tlb_ts))
+
 Pacf(diff(tlb_ts))
 Pacf(diff(tfr_ts))
 
