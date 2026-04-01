@@ -1,12 +1,9 @@
-install.packages("tseries")
 library(stringr)
 library(dplyr)
-library(tsibble)
-library(feasts)
-library(fable)
 library(ggplot2)
 library(forecast)
 library(tseries)
+library(strucchange)
 BAFA <- read.csv("BirthsAndFertilityRatesAnnual.csv")
 head(BAFA)
 summary(BAFA)
@@ -75,10 +72,17 @@ autoplot(tfr_ts) +
 
 #Structural breaks in the data
 
+bp_tlb <- breakpoints(TLB ~ Year, data = df)
+summary(bp_tlb)
+plot(bp_tlb)
+
+bp_tfr <- breakpoints(TFR~ Year, data = df) 
+summary(bp_tfr) 
+plot(bp_tfr)
 
 #time series decomposition 
 #seasonality analysis 
-
+#DO NOT INCLUDE THIS CODE
 stl_decomp1 <- stl(tfr_ts, s.window = "periodic")
 plot(stl_decomp)
 
@@ -90,25 +94,44 @@ tfr_ts |> model(stl = STL(TFR)) |> components() |> autoplot()
 
 #STL decomposition fail as the data is evidiently not havign and seasonality component
 #Because the data are annual, seasonal decomposition using STL is not appropriate. The series do not contain within-year seasonal structure, so the temporal analysis should focus instead on trend, stationarity, autocorrelation, and structural change.
-
-
-#box-cox analysis 
-#installed to asses the need for varience stabilisation
+acf(tlb_ts) # show non-stationarity 
+acf(tfr_ts) # shows non-stationarity
+pacf(tlb_ts)
+pacf(tfr_ts)
+#Box-cox analysis 
+#installed to assessthe need for varience stabilisation
 BoxCox.lambda(tlb_ts)
 BoxCox.lambda(tfr_ts)
-#potential log transformation on 
+
+#potential log transformation on TLB and TFR 
+log_tlb <- log(tlb_ts)
+autoplot(log_tlb)
+log_tfr <- log(tfr_ts) 
+autoplot(log_tfr)
+#justified? driven from trend non-statioanrity, rather than change in varience, does not help change indicating te justification os using 
+
 #Stationary analysis 
 #Difference to achieve stationary
-#tfr
+#tfr raw 
 adf.test(tfr_ts) #comfirms nonstationarity on raw data 
 kpss.test(tfr_ts) #comfrims nonstatioanrity
 
+#tlb raw 
 adf.test(tlb_ts) #comfirms nonstatioanriy on raw data
 kpss.test(tlb_ts) #comfirms nonstationarity on raw data 
-#conflicting results in the test suggesting the implementation of the log transforms
 
-adf.test(log(tlb_ts)) 
-kpss.test(log(tlb_ts))
+#conflicting results in the test suggesting the implementation 
+
+#tfr first order differencing
+adf.test(diff(tfr_ts)) 
+kpss.test(diff(tfr_ts))
+
+autoplot(diff(tfr_ts))
+
+#tlb first order differencing
+adf.test(diff(tlb_ts))  
+kpss.test(diff(tlb_ts))
+autoplot(diff(tlb_ts))
 
 #Difference to achieve stationary(visualisation) 
 autoplot(diff(tlb_ts))
@@ -129,6 +152,12 @@ Acf(diff(tlb_ts))
 Pacf(diff(tlb_ts))
 Pacf(diff(tfr_ts))
 
+Acf(diff(tfr_ts))
+Acf(diff(tlb_ts))
+Pacf(diff(tlb_ts))
+Pacf(diff(tfr_ts))
+
+
 diff(diff(tlb_ts)) |> Acf() |> autoplot()
 diff(diff(tfr_ts)) |> Acf() |> autoplot()
 
@@ -144,9 +173,6 @@ diff(diff(tfr_ts)) |> Acf() |> autoplot()
 
 model_tlb <- 
 model_tfr <-
-
-
-breakpoints(tfr_ts ~ 1)
 
 #ARIMA (non-seasonal)
 #testing of forecasting of models
