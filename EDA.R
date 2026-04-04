@@ -143,3 +143,7 @@ tlb_test  <- window(tlb_ts, start = 2013)
 tfr_train <- window(tfr_ts, end = 2012)
 tfr_test  <- window(tfr_ts, start = 2013)
 
+#linear regression model with polynomial fitting
+#ARIMA 
+# forecastng models with drift,naive, mean 
+
