@@ -167,6 +167,29 @@ autoplot(fc_trend_tfr) +
   xlab("Year") + ylab("TFR") 
 
 #ARIMA 
+ 
+fit_arima_tfr <- Arima(tfr_train, order = c(0,2,1)) #Non seasonality component, second order differencing, and MA(1) component
+checkresiduals(fit_arima_tfr)
 
-# forecastng models with drift,naive, mean 
+fit_arima_tlb <- Arima(tlb_train, order = c(0,1,0)) #Non seasonality component, first order differencing, and No MA component
+checkresiduals(fit_arima_tlb)
+
+#forcasting for ARIMA
+fc_arima_tfr <- forecast(fit_arima_tfr, h = length(tfr_test))
+fc_arima_tfr$mean 
+
+autoplot(fc_arima_tfr)+
+  autolayer(tfr_ts, series = "Actual") +
+  ggtitle("TFR Forecast with Full Time Series") +
+  xlab("Year") + ylab("TFR")
+
+fc_arima_tlb <- forecast(fit_arima_tlb , h = length(tlb_test))
+fc_arima_tlb$mean 
+
+autoplot(fc_arima_tlb)+
+  autolayer(tlb_ts, series = "Actual") +
+  ggtitle("TLB Forecast with Full Time Series") +
+  xlab("Year") + ylab("TLB")
+
+# Forecastng models drift,naive, mean
 
