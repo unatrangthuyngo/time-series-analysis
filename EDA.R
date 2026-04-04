@@ -4,14 +4,17 @@ library(ggplot2)
 library(forecast)
 library(tseries)
 library(strucchange)
+library(fable)
+library(tsibble) 
+
 BAFA <- read.csv("BirthsAndFertilityRatesAnnual.csv")
 head(BAFA)
 summary(BAFA)
 #Filtering required Variables for time series analysis
 #TLB 
-TLB <- BAFA[1, ]
+TFR <- BAFA[1, ] 
 #TFR
-TFR <- BAFA[15, ]
+TLB <- BAFA[15, ]
 #Tranposing the rows to columns
 Tranposed_TLB <- t(TLB)
 Transposed_TFR <- t(TFR)
@@ -82,93 +85,61 @@ plot(bp_tfr)
 
 #time series decomposition 
 #seasonality analysis 
-#DO NOT INCLUDE THIS CODE
-stl_decomp1 <- stl(tfr_ts, s.window = "periodic")
-plot(stl_decomp)
-
-stl_decomp2 <- stl(tlb_ts, s.window = "periodic")
-plot(stl_decomp)
-
-#STL
-tfr_ts |> model(stl = STL(TFR)) |> components() |> autoplot()
-
 #STL decomposition fail as the data is evidiently not havign and seasonality component
 #Because the data are annual, seasonal decomposition using STL is not appropriate. The series do not contain within-year seasonal structure, so the temporal analysis should focus instead on trend, stationarity, autocorrelation, and structural change.
+
 acf(tlb_ts) # show non-stationarity 
 acf(tfr_ts) # shows non-stationarity
 pacf(tlb_ts) # significant time autocorrelations spikes
-pacf(tfr_ts)# significant time autocorrelations spikes
+pacf(tfr_ts)# significant time autocorrelations spikes(AR model?)
 
-#potential log transformation on TLB  
-log_tlb <- log(tlb_ts)
-
-#justified? driven from trend non-statioanrity, rather than change in varience, does not help change indicating te justification os using 
-
-#Stationary analysis 
+#Stationary and Autocorrelation analysis
 #Difference to achieve stationary
-#tfr raw 
-adf.test(tfr_ts) #comfirms nonstationarity on raw data 
-kpss.test(tfr_ts) #comfrims nonstatioanrity
-
-#tlb raw 
-adf.test(tlb_ts) #comfirms stationanrity on raw data
-kpss.test(tlb_ts) #comfirms nonstationarity on raw data 
-#conflicting results in the test suggesting the implementation of a log transfrom 
-#apply a log transfrom only on TLB 
-log_tlb <- log(tlb_ts)
-adf.test(log_tlb) 
-kpss.test(log_tlb) 
-#To keep consistency in comparing TLB and TFR, both will be log transformed
-log_tfr <-log(tfr_ts)
-adf.test(log_tfr) 
-kpss.test(log_tfr)
+#tlb_ts raw 
+adf.test(tlb_ts) #comfirms nonstationarity on raw data 
+kpss.test(tlb_ts) #comfrims nonstatioanrity
+#tfr_ts raw 
+adf.test(tfr_ts) #comfirms stationanrity on raw data
+kpss.test(tfr_ts) #comfirms nonstationarity on raw data 
+#conflicting results, given the strong result for kpss test and visual trend of the data it is non-stationary. indicates trend statioanrity
 
 #applying first order differencing
-#tfr first order differencing
-adf.test(diff(log_tfr)) 
-kpss.test(diff(log_tfr))
 
-autoplot(diff(log_tfr))
+#tfr first order differencing
+adf.test(diff(tfr_ts)) #confirms staionarity 
+kpss.test(diff(tfr_ts)) #comfirms stationarity, borderline passed will do another order diffriencing
+
+acf(diff(tfr_ts)) # still a bit of decay
+pacf(diff(tfr_ts))
+autoplot(diff(tfr_ts)) # a little bit non-stationary apply a second order diffrencing
+
+#tfr second order diffrencing
+acf(diff(diff(tfr_ts))) 
+pacf(diff(diff(tfr_ts))) 
+
+autoplot(diff(diff(tfr_ts))) #completely stationary
+
+adf.test(diff(diff(tlb_ts)))  #comfirms stationarity 
+kpss.test(diff(diff(tlb_ts))) #comfirms stationarity
+# must have second order difference, and inclusion of MA(1) significant spike at lag 1 for ARIMA
 
 #tlb first order differencing
-adf.test(diff(log_tlb))  
-kpss.test(diff(log_tlb))
+acf(diff(tlb_ts)) # indicate stationarity achieved
+pacf(diff(tlb_ts))
 
-autoplot(diff(log_tlb))
+adf.test(diff(tlb_ts))  #comfirms stationarity 
+kpss.test(diff(tlb_ts)) #comfirms stationarity first order differencing good
+# must have first order differenceand no MA component for ARIMA
 
+#Spectral analysis 
+spectrum(tlb_ts, main="Periodogram of TLB")
+spectrum(tfr_ts, main= "Periodogram of TFR")
 
-#Correlation analysis
-#autocorrelation analysis
-#ACF and PACF plots
-Acf(diff(tfr_ts))
-Acf(diff(tlb_ts))
-
-Pacf(diff(tlb_ts))
-Pacf(diff(tfr_ts))
-
-Acf(diff(tfr_ts))
-Acf(diff(tlb_ts))
-Pacf(diff(tlb_ts))
-Pacf(diff(tfr_ts))
-
-
-diff(diff(tlb_ts)) |> Acf() |> autoplot()
-diff(diff(tfr_ts)) |> Acf() |> autoplot()
-
-#Time series analysis 
-
-# Potential Time series model
-#given that 
-#Given certain parameters, which the time series data exihibits 
-
-#linear regression model with polynomial fitting
-#Ar model 
-#ARIMA (non-seasonal)
-
-model_tlb <- 
-model_tfr <-
-
-#ARIMA (non-seasonal)
-#testing of forecasting of models
+#Potential Time series model
 #Split into training and test for different model
-#Research questions 1-3
+tlb_train <- window(tlb_ts, end = 2012)
+tlb_test  <- window(tlb_ts, start = 2013)
+
+tfr_train <- window(tfr_ts, end = 2012)
+tfr_test  <- window(tfr_ts, start = 2013)
+
