@@ -155,6 +155,16 @@ fc_trend_tfr<- forecast(fit_trend_tfr , h = length(tfr_test))
 
 fc_trend_tlb <- forecast(fit_trend_tlb , h = length(tfr_test))
 
+#Plotting
+autoplot(fc_trend_tlb) +
+  autolayer(tlb_ts, series = "Actual") +
+  ggtitle("TLB Forecast with Full Time Series") +
+  xlab("Year") + ylab("TLB")
+
+autoplot(fc_trend_tfr) +
+  autolayer(tfr_ts, series = "Actual") +
+  ggtitle("TFR Forecast with Full Time Series") +
+  xlab("Year") + ylab("TFR") 
 
 #ARIMA 
 
