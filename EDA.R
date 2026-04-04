@@ -169,10 +169,8 @@ autoplot(fc_trend_tfr) +
 #ARIMA 
  
 fit_arima_tfr <- Arima(tfr_train, order = c(0,2,1)) #Non seasonality component, second order differencing, and MA(1) component
-checkresiduals(fit_arima_tfr)
 
 fit_arima_tlb <- Arima(tlb_train, order = c(0,1,0)) #Non seasonality component, first order differencing, and No MA component
-checkresiduals(fit_arima_tlb)
 
 #forcasting for ARIMA
 fc_arima_tfr <- forecast(fit_arima_tfr, h = length(tfr_test))
@@ -192,4 +190,44 @@ autoplot(fc_arima_tlb)+
   xlab("Year") + ylab("TLB")
 
 # Forecastng models drift,naive, mean
+df_ts <- df |>
+  as_tsibble(index = Year)
+
+train <- df_ts |> filter(Year <= 2012)
+test  <- df_ts |> filter(Year > 2012)
+
+fit_tlb <- train |>
+  model(
+    Mean  = MEAN(TLB),
+    Naive = NAIVE(TLB),
+    Drift = NAIVE(TLB ~ drift()),
+  )
+
+fit_tfr <- train |>
+  model(
+    Mean   = MEAN(TFR),
+    Naive  = NAIVE(TFR),
+    Drift  = NAIVE(TFR ~ drift()),
+  )
+
+fc_tlb <- fit_tlb |> forecast(new_data = test)
+fc_tfr <- fit_tfr |> forecast(new_data = test)
+
+fc_tlb |>
+  autoplot(train, level = NULL) +
+  autolayer(test, TLB, colour = "black") +
+  ggtitle("TLB Forecast vs Actual")
+
+fc_tfr |>
+  autoplot(train, level = NULL) +
+  autolayer(test, TFR, colour = "black") +
+  ggtitle("TFR Forecast vs Actual")
+
+#Residual analysis 
+
+#linear regression model with polynomial fitting
+#ARIMA
+#Mean Model 
+#Naive Model 
+#Naive with Drift
 
