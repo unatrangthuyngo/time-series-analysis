@@ -144,6 +144,19 @@ tfr_train <- window(tfr_ts, end = 2012)
 tfr_test  <- window(tfr_ts, start = 2013)
 
 #linear regression model with polynomial fitting
+
+# Fit Linear Model with cubic 
+fit_trend_tfr <- tslm(tfr_train ~ trend + I(trend^2) +I(trend^3), lambda = 0)
+
+fit_trend_tlb<- tslm(tlb_train ~ trend + I(trend^2) +I(trend^3), lambda = 0)
+
+# Forecasting for linear regressive models
+fc_trend_tfr<- forecast(fit_trend_tfr , h = length(tfr_test))
+
+fc_trend_tlb <- forecast(fit_trend_tlb , h = length(tfr_test))
+
+
 #ARIMA 
+
 # forecastng models with drift,naive, mean 
 
