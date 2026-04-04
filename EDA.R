@@ -226,8 +226,100 @@ fc_tfr |>
 #Residual analysis 
 
 #linear regression model with polynomial fitting
+#TFR 
+checkresiduals(fit_trend_tfr) 
+
+#TLB
+checkresiduals(fit_trend_tlb)
+
 #ARIMA
+#TFR 
+checkresiduals(fit_arima_tfr) 
+
+#TLB
+checkresiduals(fit_arima_tlb)
+
+#Extracting the mean model, naive, and naive with drift residuals
+#TLB
+res_tlb <- augment(fit_tlb)
+
+#TFR
+res_tfr <- augment(fit_tfr) 
+
 #Mean Model 
-#Naive Model 
+#tlb 
+mean_res_tlb <- res_tlb |> 
+  filter(.model == "Mean") |> 
+  pull(.resid)
+#Plots
+ggtsdisplay(mean_res_tlb, main = "Residuals From Mean Model (TLB)") 
+
+#portmaneau test
+Box.test(mean_res_tlb, lag = 10, type = "Ljung-Box")
+
+#tfr
+mean_res_tfr <- res_tfr |> 
+  filter(.model == "Mean") |> 
+  pull(.resid)
+
+#Plots
+ggtsdisplay(mean_res_tfr, main = "Residuals From Mean Model (TFR)") 
+
+#portmaneau test
+
+Box.test(mean_res_tfr, lag = 10, type = "Ljung-Box")
+
+#Naive model 
+#tlb 
+naive_res_tlb <- res_tlb |> 
+  filter(.model == "Naive") |> 
+  pull(.resid)
+
+#Plots
+ggtsdisplay(naive_res_tlb, 
+            main ="Residual from Naive Model (TLB)") 
+#portmaneau test 
+Box.test(naive_res_tlb, lag = 10, type = "Ljung-Box")
+
+#tfr 
+naive_res_tfr <- res_tfr |> 
+  filter(.model =="Naive") |> 
+  pull(.resid) 
+
+#Plots
+ggtsdisplay(naive_res_tfr, 
+            main="Residuals from Naive Model (TFR)") 
+#portmaneau test 
+Box.test(naive_res_tfr, lag = 10, type ="Ljung-Box") 
+
 #Naive with Drift
+#tlb
+drift_res_tlb <- res_tlb |> 
+  filter(.model == "Drift") |> 
+  pull(.resid)
+#Plots 
+ggtsdisplay(drift_res_tlb, 
+            main = "Residual from Naive model + Drift (TLB)") 
+#portmaneau test 
+Box.test(drift_res_tlb, lag = 10, type = "Ljung-Box")
+
+#tfr 
+drift_res_tfr <-res_tfr |> 
+  filter(.model == "Drift") |> 
+  pull(.resid) 
+
+#Plots
+ggtsdisplay(drift_res_tfr, 
+            main = "Residual from Naive model + Drift (TFR)") 
+#portmaneau test
+
+Box.test(drift_res_tfr, lag = 10, type = "Ljung-Box")
+
+
+
+
+
+
+
+
 
