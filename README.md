@@ -2,6 +2,7 @@ This project conducts an exploratory data analysiis (EDA) and time series modell
 
 -Total live Births (TLB) 
 -Total Fertility Rate (TFR) 
+
 over the period 1960 to 2024
 
 The aim is to: 
