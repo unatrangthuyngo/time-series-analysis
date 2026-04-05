@@ -1,9 +1,8 @@
-This project conducts an exploratory data analysiis (EDA) and time series modelling of Singapore': 
-
--Total live Births (TLB) 
--Total Fertility Rate (TFR) 
-
-over the period 1960 to 2024
+This project conducts an exploratory data analysiis (EDA) and time series modelling of Singapore's: 
+- Total Live Births (TLB)
+- Total Fertility Rate (TFR)
+  
+over the period 1960 to 2024.
 
 The aim is to: 
 -Investigate the temporal characteristics of both series
