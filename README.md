@@ -5,20 +5,20 @@ This project conducts an exploratory data analysiis (EDA) and time series modell
 over the period 1960 to 2024.
 
 The aim is to: 
--Investigate the temporal characteristics of both series
--asses stationarity and structural changes
--develop appropriate forecasting models
--and evaluate model perfromance using statistical diagnostics and forecast accuracy measures. 
+- Investigate the temporal characteristics of both series
+- asses stationarity and structural changes
+- develop appropriate forecasting models
+- and evaluate model perfromance using statistical diagnostics and forecast accuracy measures. 
 
 Through the analysis,  the following questions were decided: 
 
 1. Do TLB and TFR exhibit synchronized structural breaks (e.g post-2008 or Covid-19), and how do
 these shifts degrade the forecasting accuracy of the ARIMA models?
 
-2.To what degree is the Long term decline in TFR driven by secular trends (e.g increasing maternal age)
+2. To what degree is the Long term decline in TFR driven by secular trends (e.g increasing maternal age)
 versus cyclical shocks (e.g changes in healthcare access or contraceptive prevalence)
 
-3.How does volatility of Total Live Births respond to macroeconomic fluctuations (e.g, CPI or Unemployment), and is there a consistent 9-12 month lagged effect?
+3. How does volatility of Total Live Births respond to macroeconomic fluctuations (e.g, CPI or Unemployment), and is there a consistent 9-12 month lagged effect?
 
 ## Data cleaning 
  Data: https://tablebuilder.singstat.gov.sg/table/TS/M810091
@@ -32,11 +32,11 @@ The dataset was transformed from a wide format into a time-series friendly forma
 
 ## Exploratory Data Analysis 
 Key findings: 
--Both TLB and TFR exhibit strong non lienar downward trends
--No evidence of seasonality given the annual frequency 
+- Both TLB and TFR exhibit strong non lienar downward trends
+- No evidence of seasonality given the annual frequency 
 presence of structural breaks in particularlt TLB 
--spectrial analysis shows no dominate cylical patterns 
--strong autocorrelation indicating temporal dependence
+- spectrial analysis shows no dominate cylical patterns 
+- strong autocorrelation indicating temporal dependence
 
 ## Time Series modelling 
 
