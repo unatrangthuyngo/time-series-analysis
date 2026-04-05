@@ -61,14 +61,14 @@ TFR: ARIMA(0,2,1)
 - no external variables affect on the decline of TLB and TFR
 
 #Packages used
--stringr
--dplyr
--ggplot2
--forecast 
--tseries 
--strucchnage
--fable 
--tsibble
+- stringr
+- dplyr
+- ggplot2
+- forecast 
+- tseries 
+- strucchnage
+- fable 
+- tsibble
 
 
 
