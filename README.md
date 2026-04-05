@@ -21,7 +21,7 @@ versus cyclical shocks (e.g changes in healthcare access or contraceptive preval
 
 ## Data cleaning 
  Data: https://tablebuilder.singstat.gov.sg/table/TS/M810091
-The dataset was transformed froma  wide format into a time-series friendly format, where the following procedues were done: 
+The dataset was transformed from a wide format into a time-series friendly format, where the following procedues were done: 
 
 - Extracted TLB and TFR rows
 - transposed into long format
