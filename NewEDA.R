@@ -40,3 +40,10 @@ df <- merge(tlb_df,tfr_df, by = "Year")
 
 tlb_ts <- ts(tlb_df$TLB, start = 1960, frequency = 1)
 tfr_ts <- ts(tfr_df$TFR, start = 1960, frequency = 1)
+
+#EDA
+
+autoplot(tlb_ts) 
+autoplot(tfr_ts)
+
+
