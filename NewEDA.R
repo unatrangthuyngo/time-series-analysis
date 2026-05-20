@@ -3,7 +3,6 @@ library(dplyr)
 library(ggplot2)
 library(forecast)
 library(tseries)
-library(strucchange)
 library(fable)
 library(tsibble) 
 
@@ -45,5 +44,33 @@ tfr_ts <- ts(tfr_df$TFR, start = 1960, frequency = 1)
 
 autoplot(tlb_ts) 
 autoplot(tfr_ts)
+
+#Transformation on the Time Series data
+#Box-Cox transformations
+
+lambda_tlb <- BoxCox.lambda(tlb_ts)
+
+lambda_tfr <- BoxCox.lambda(tfr_ts)
+
+lambda_tlb
+lambda_tfr
+
+tlb_bc <- BoxCox(tlb_ts, lambda_tlb)
+tfr_bc <- BoxCox(tfr_ts, lambda_tfr)
+
+autoplot(tlb_bc) +
+  ggtitle("Box-Cox Transformed TLB")
+
+autoplot(tfr_bc) +
+  ggtitle("Box-Cox Transformed TFR")
+
+#Log transformation
+
+log_tlb <- log(tlb_ts)
+log_tfr <- log(tfr_ts)
+
+autoplot(log_tlb)
+autoplot(log_tfr)
+
 
 
