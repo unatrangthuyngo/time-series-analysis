@@ -72,5 +72,103 @@ log_tfr <- log(tfr_ts)
 autoplot(log_tlb)
 autoplot(log_tfr)
 
+#Differencing the time series
+
+#No transformation 
+
+#TLB
+
+diff_tlb <- diff(tlb_ts)
+
+kpss.test(diff_tlb)
+
+autoplot(diff_tlb)
+
+#TFR
+
+diff_tfr <- diff(tfr_ts)
+
+kpss.test(diff_tfr)
+
+diff2_tfr <- diff(diff(tfr_ts))
+
+kpss.test(diff2_tfr)
+
+autoplot(diff2_tfr)
+
+#Box-Cox transformation
+
+#TLB
+
+diff_tlb_c <- diff(tlb_bc)
+
+kpss.test(diff_tlb_c)
+
+autoplot(diff_tlb_c)
+
+#TFR
+
+diff_tfr_c <- diff(tfr_bc)
+
+kpss.test(diff_tfr_c)
+
+autoplot(diff_tfr_c)
+
+#Log transfromation
+
+#TLB
+
+diff_log_tlb <- diff(log_tlb)
+
+kpss.test(diff_log_tlb)
+
+autoplot(diff_log_tlb)
+
+#TFR
+
+diff_log_tfr <- diff(log_tfr)
+
+kpss.test(diff_log_tfr)
+
+diff2_log_tfr <- diff(diff(log_tfr))
+
+kpss.test(diff2_log_tfr)
+
+autoplot(diff2_log_tfr)
+
+#ACF and PACF plots 
+
+#No transformation 
+#TLB 
+acf(diff_tlb, lag.max = 60)
+pacf(diff_tlb, lag.max = 60)
+#TFR 
+acf(diff2_tfr, lag.max = 60)
+pacf(diff2_tfr, lag.max = 60)
+
+#Box cox transformation 
+#TLB 
+acf(diff_tlb_c, lag.max = 60)
+pacf(diff_tlb_c, lag.max = 60)
+#TFR 
+acf(diff_tfr_c, lag.max = 60)
+pacf(diff_tfr_c, lag.max = 60)
+
+#Log transformation 
+#TLB 
+acf(diff_log_tlb, lag.max = 60)
+pacf(diff_log_tlb, lag.max = 60)
+#TFR 
+acf(diff2_log_tfr,lag.max = 60)
+pacf(diff2_log_tfr,lag.max = 60)
+
+#Significant lags at 11, 12, and 13 in PACF, reepatign cylical pattern, at 12, 24, etc
+
+#Traning and Testing data sets
+tlb_train <- window(tlb_ts, end = 2012)
+tlb_test  <- window(tlb_ts, start = 2013)
+
+tfr_train <- window(tfr_ts, end = 2012)
+tfr_test  <- window(tfr_ts, start = 2013)
 
 
