@@ -46,24 +46,6 @@ autoplot(tlb_ts)
 autoplot(tfr_ts)
 
 #Transformation on the Time Series data
-#Box-Cox transformations
-
-lambda_tlb <- BoxCox.lambda(tlb_ts)
-
-lambda_tfr <- BoxCox.lambda(tfr_ts)
-
-lambda_tlb
-lambda_tfr
-
-tlb_bc <- BoxCox(tlb_ts, lambda_tlb)
-tfr_bc <- BoxCox(tfr_ts, lambda_tfr)
-
-autoplot(tlb_bc) +
-  ggtitle("Box-Cox Transformed TLB")
-
-autoplot(tfr_bc) +
-  ggtitle("Box-Cox Transformed TFR")
-
 #Log transformation
 
 log_tlb <- log(tlb_ts)
@@ -452,34 +434,357 @@ pacf(log_tfr_cycle2$residuals, lag.max = 60)
 #Viable Model: SARIMA: (3,1,1)(0,1,1, period= 12), (3,1,1)(1,1,0, period= 12),
 
 #Ensure analysis of the arima and sarima models, noting special notes of the equation and qualities
-#Predictive forcasting accuracy
 
 #TLB successful models 
 
-#No transform 
+#Non-transform 
+#ARIMA (ARIMA 1-6 no trans TLB)
+m1 <- Arima(tlb_train, order = c(11,1,4))
+
+acf(m1$residuals, lag.max = 60)
+pacf(m1$residuals, lag.max = 60)
+
+m2 <- Arima(tlb_train, order = c(13, 1, 1))
+
+acf(m2$residuals, lag.max = 60)
+pacf(m2$residuals, lag.max = 60)
+
+m3 <- Arima(tlb_train, order = c(12, 1, 4))
+
+acf(m3$residuals, lag.max = 60)
+pacf(m3$residuals, lag.max = 60)
+
+m4 <- Arima(tlb_train, order = c (13, 1, 3))
+
+acf(m4$residuals, lag.max = 60)
+pacf(m4$residuals, lag.max = 60)
+
+m5 <- Arima(tlb_train, order = c (13, 1, 2))
+
+acf(m5$residuals, lag.max = 60)
+pacf(m5$residuals, lag.max = 60)
+
+#SARIMA (SARIMA 6-10 no trans TLB)
+m6 <- Arima( 
+  tlb_train, 
+  order = c(3,1,1), 
+  seasonal = list(order = c(1,1,0), period = 12))
+
+acf(m6$residuals, lag.max = 60)
+pacf(m6$residuals, lag.max = 60)
+
+m7 <- Arima( 
+  tlb_train, 
+  order = c(4,1,0), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m7$residuals, lag.max = 60)
+pacf(m7$residuals, lag.max = 60)
+
+m8 <- Arima( 
+  tlb_train, 
+  order = c(3,1,1), 
+  seasonal = list(order = c(0,1,1), period = 12))
+
+acf(m8$residuals, lag.max = 60)
+pacf(m8$residuals, lag.max = 60)
+
+m9 <- Arima( 
+  tlb_train, 
+  order = c(3,1,1), 
+  seasonal = list(order = c(1,1,1), period = 12))
+
+acf(m9$residuals, lag.max = 60)
+pacf(m9$residuals, lag.max = 60)
+
+m10 <- Arima( 
+  tlb_train, 
+  order = c(2,1,2), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m10$residuals, lag.max = 60)
+pacf(m10$residuals, lag.max = 60)
+
 
 #log transform
 
+#ARIMA (11-14 ARIMA log trans TLB)
 
+m11 <- Arima(log(tlb_train), order = c(14,1,0))
+
+acf(m11$residuals, lag.max = 60)
+pacf(m11$residuals, lag.max = 60)
+
+m12  <- Arima(log(tlb_train), order = c(13,1,1)) #overlap with the non transformation data 
+
+acf(m12$residuals, lag.max = 60)
+pacf(m12$residuals, lag.max = 60)
+
+m13  <- Arima(log(tlb_train), order = c(12,1,3)) #overlap with the non transformation data
+
+acf(m13$residuals, lag.max = 60)
+pacf(m13$residuals, lag.max = 60)
+
+m14 <- Arima(log(tlb_train), order = c(11,1,4)) #overlap with the non transformation data 
+
+acf(m14$residuals, lag.max = 60)
+pacf(m14$residuals, lag.max = 60)
+
+#SARIMA (15-18 SARIMA log trans TLB)
+
+m15 <- Arima( 
+  log(tlb_train), 
+  order = c(3,1,3), 
+  seasonal = list(order = c(0,1,1), period = 12))
+
+acf(m15$residuals, lag.max = 60)
+pacf(m15$residuals, lag.max = 60)
+
+m16 <- Arima( 
+  log(tlb_train), 
+  order = c(3,1,2), 
+  seasonal = list(order = c(0,1,1), period = 12))
+
+acf(m16$residuals, lag.max = 60)
+pacf(m16$residuals, lag.max = 60)
+
+m17 <- Arima( 
+  log(tlb_train), 
+  order = c(3,1,3), 
+  seasonal = list(order = c(1,1,0), period = 12))
+
+acf(m17$residuals, lag.max = 60)
+pacf(m17$residuals, lag.max = 60)
+
+m18 <- Arima( 
+  log(tlb_train), 
+  order = c(3,1,2), 
+  seasonal = list(order = c(1,1,1), period = 12))
+
+acf(m18$residuals, lag.max = 60)
+pacf(m18$residuals, lag.max = 60)
 
 #TFR successful models
 
 #No transform 
+#ARIMA (19-21 arima no trans TFR)
+m19 <- Arima(tfr_train, order = c(11,2,2))
+
+acf(m19$residuals, lag.max = 60)
+pacf(m19$residuals, lag.max = 60)
+
+m20 <- Arima(tfr_train, order = c(10,2,3))
+
+acf(m20$residuals, lag.max = 60)
+pacf(m20$residuals, lag.max = 60)
+
+m21 <- Arima(tfr_train, c(12,2,3))
+
+acf(m21$residuals, lag.max = 60)
+pacf(m21$residuals, lag.max = 60)
+
+#SARIMA (22-26 arima no trans TFR)
+
+m22 <- Arima( 
+  tfr_train, 
+  order = c(2,2,2), 
+  seasonal = list(order = c(1,1,0), period = 12))
+
+acf(m22$residuals, lag.max = 60)
+pacf(m22$residuals, lag.max = 60)
+
+m23 <- Arima( 
+  tfr_train, 
+  order = c(4,2,1), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m23$residuals, lag.max = 60)
+pacf(m23$residuals, lag.max = 60)
+
+m24 <- Arima( 
+  tfr_train, 
+  order = c(4,2,2), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m24$residuals, lag.max = 60)
+pacf(m24$residuals, lag.max = 60)
+
+m25 <- Arima( 
+  tfr_train, 
+  order = c(5,2,1), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m25$residuals, lag.max = 60)
+pacf(m25$residuals, lag.max = 60)
+
+m26 <- Arima( 
+  tfr_train, 
+  order = c(5,2,2), 
+  seasonal = list(order = c(0,1,0), period = 12))
+
+acf(m26$residuals, lag.max = 60)
+pacf(m26$residuals, lag.max = 60)
 
 #log transform
 
+#ARIMA (ARIMA 27-30 log trans TFR)
+m27 <- Arima(log(tfr_train), order = c(15,1,1))
+acf(m27$residuals, lag.max = 60)
+pacf(m27$residuals, lag.max = 60)
+
+m28 <- Arima(log(tfr_train), order = c(12,1,4))
+acf(m28$residuals, lag.max = 60)
+pacf(m28$residuals, lag.max = 60)
+
+m29 <- Arima(log(tfr_train), order = c(13,1,3))
+acf(m29$residuals, lag.max = 60)
+pacf(m29$residuals, lag.max = 60)
+
+m30 <- Arima(log(tfr_train), order = c(14,1,3))
+acf(m30$residuals, lag.max = 60)
+pacf(m30$residuals, lag.max = 60)
+
+#SARIMA (SARIMA 31-32 log trans TFR)
+
+m31 <- Arima( 
+  log(tfr_train), 
+  order = c(3,1,1), 
+  seasonal = list(order = c(0,1,1), period = 12))
+acf(m31$residuals, lag.max = 60)
+pacf(m5$residuals, lag.max = 60)
+
+m32 <- Arima( 
+  log(tfr_train), 
+  order = c(3,1,1), 
+  seasonal = list(order = c(1,1,0), period = 12))
+acf(m32$residuals, lag.max = 60)
+pacf(m32$residuals, lag.max = 60)
 
 
-#MASE
-
-#MAE
-
-#SSE
+#Predictive forecasting accuracy
 
 #AIC
 
+#TLB 
+
+#Non Transfromed
+#ARIMA
+AIC(m1, m2, m3, m4, m5) 
+#SARIMA
+AIC(m6, m7, m8,m9, m10)
+
+#Log Transformed
+#ARIMA
+AIC(m11, m12, m13, m14)
+#SARIMA
+AIC(m15, m16, m17, m18)
+
+#TFR 
+
+#Non Transformed 
+#ARIMA
+AIC(m19, m20, m21)
+#SARIMA
+AIC(m22, m23, m24, m25, m26)
+
+#Log Transformed
+#ARIMA
+AIC(m27, m28, m29, m30)
+#SARIMA
+AIC(m31, m32)
+
+#MAE, MSE
+
+fc_m1 <- 
+fc_m2 <- 
+fc_m3 <-
+fc_m4 <-
+fc_m5 <-
+fc_m6 <-
+fc_m7 <-
+fc_m8 <- 
+fc_m9 <-
+fc_m10 <-
+fc_m11 <-
+fc_m12 <-
+fc_m13 <-
+fc_m14 <-
+fc_m15 <-
+fc_m16 <-
+fc_m17 <-
+fc_m18 <-
+fc_m19 <-
+fc_m20 <-
+fc_m21 <-
+fc_m22 <-
+fc_m23 <-
+fc_m24 <-
+fc_m25 <-
+fc_m26 <-
+fc_m27 <-
+fc_m28 <-
+fc_m29 <-
+fc_m30 <-
+fc_m31 <-
+fc_m32 <-
+
+
+#SSE
+
+
+
+
+
+
 
 #Plotting predictive forecasting to actual testing data
+
+#TLB m15 the best 
+
+#No trans form 
+#(ARIMA 1-5 no trans TLB)
+#(SARIMA 6-10 no trans TLB)
+
+fc <- forecast(m8, h = length(tlb_test))
+
+autoplot(fc) +
+  autolayer(tlb_test, series = "Actual")
+
+# Good looking prediction: 8,9
+
+# log trans form 
+#(11-14 ARIMA log trans TLB)
+#(15-18 SARIMA log trans TLB)
+
+fc <- forecast(m12, h = length(tlb_test))
+
+autoplot(fc) +
+  autolayer(log(tlb_test), series = "Actual")
+# Good looking prediction:15,16,18  
+
+#TFR 
+#No trans 
+#(19-21 arima no trans TFR)
+#(22-26 Sarima no trans TFR)
+
+fc <- forecast(m21, h = length(tfr_test))
+
+autoplot(fc) +
+  autolayer(tfr_test, series = "Actual")
+
+# Good looking prediction: 21, 19, 22 
+
+#log Trans 
+#(ARIMA 27-30 log trans TFR)
+#(SARIMA 31-32 log trans TFR)
+
+fc <- forecast(m32, h = length(tfr_test))
+
+autoplot(fc) +
+  autolayer(log(tfr_test), series = "Actual")
+
+# Good looking prediction: 28, 31 
+
 #Compare time series models with AIC and look at the degrees of freedom, make sure final model are justified by literature
 
 
