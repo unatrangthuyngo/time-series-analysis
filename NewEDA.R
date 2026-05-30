@@ -40,6 +40,13 @@ df <- merge(tlb_df,tfr_df, by = "Year")
 tlb_ts <- ts(tlb_df$TLB, start = 1960, frequency = 1)
 tfr_ts <- ts(tfr_df$TFR, start = 1960, frequency = 1)
 
+#Traning and Testing data sets
+tlb_train <- window(tlb_ts, end = 2012)
+tlb_test  <- window(tlb_ts, start = 2013)
+
+tfr_train <- window(tfr_ts, end = 2012)
+tfr_test  <- window(tfr_ts, start = 2013)
+
 #EDA
 
 autoplot(tlb_ts) 
@@ -48,8 +55,8 @@ autoplot(tfr_ts)
 #Transformation on the Time Series data
 #Log transformation
 
-log_tlb <- log(tlb_ts)
-log_tfr <- log(tfr_ts)
+log_tlb <- log(tlb_train)
+log_tfr <- log(tfr_train)
 
 autoplot(log_tlb)
 autoplot(log_tfr)
@@ -60,7 +67,7 @@ autoplot(log_tfr)
 
 #TLB
 
-diff_tlb <- diff(tlb_ts)
+diff_tlb <- diff(tlb_train)
 
 kpss.test(diff_tlb)
 
@@ -68,33 +75,15 @@ autoplot(diff_tlb)
 
 #TFR
 
-diff_tfr <- diff(tfr_ts)
+diff_tfr <- diff(tfr_train)
 
 kpss.test(diff_tfr)
 
-diff2_tfr <- diff(diff(tfr_ts))
+diff2_tfr <- diff(diff(tfr_train))
 
 kpss.test(diff2_tfr)
 
 autoplot(diff2_tfr)
-
-#Box-Cox transformation
-
-#TLB
-
-diff_tlb_c <- diff(tlb_bc)
-
-kpss.test(diff_tlb_c)
-
-autoplot(diff_tlb_c)
-
-#TFR
-
-diff_tfr_c <- diff(tfr_bc)
-
-kpss.test(diff_tfr_c)
-
-autoplot(diff_tfr_c)
 
 #Log transfromation
 
@@ -122,13 +111,13 @@ autoplot(diff2_log_tfr)
 
 #No transformation 
 #TLB 
-acf(diff_tlb, lag.max = 60)
-pacf(diff_tlb, lag.max = 60)
+acf(diff_tlb, lag.max = 50)
+pacf(diff_tlb, lag.max = 50)
 
 #seasonal differencing 
 
-acf(diff(diff_tlb, lag = 12), lag.max = 60)
-pacf(diff(diff_tlb, lag = 12), lag.max = 60)
+acf(diff(diff_tlb, lag = 12), lag.max = 50)
+pacf(diff(diff_tlb, lag = 12), lag.max = 50)
 
 #TFR 
 acf(diff2_tfr, lag.max = 60)
@@ -136,26 +125,26 @@ pacf(diff2_tfr, lag.max = 60)
 
 #seasonal differencing
 
-acf(diff(diff2_tfr, lag = 12), lag.max = 60)
-pacf(diff(diff2_tfr, lag = 12), lag.max = 60)
+acf(diff(diff2_tfr, lag = 12), lag.max = 50)
+pacf(diff(diff2_tfr, lag = 12), lag.max = 50)
 
 #Log transformation 
 #TLB 
-acf(diff_log_tlb, lag.max = 60)
-pacf(diff_log_tlb, lag.max = 60)
+acf(diff_log_tlb, lag.max = 50)
+pacf(diff_log_tlb, lag.max = 50)
 
 #seasonal differencing 
 
-acf(diff(diff_log_tlb, lag = 12), lag.max = 60)
-pacf(diff(diff_log_tlb, lag = 12), lag.max = 60)
+acf(diff(diff_log_tlb, lag = 12), lag.max = 50)
+pacf(diff(diff_log_tlb, lag = 12), lag.max = 50)
 
 #TFR 
-acf(diff2_log_tfr,lag.max = 60)
-pacf(diff2_log_tfr,lag.max = 60)
+acf(diff2_log_tfr ,lag.max = 50)
+pacf(diff2_log_tfr ,lag.max = 50)
 
 #seasonal differencing  
-acf(diff(diff2_log_tfr, lag = 12), lag.max = 60)
-pacf(diff(diff2_log_tfr, lag = 12), lag.max = 60)
+acf(diff(diff2_log_tfr, lag = 12), lag.max = 50)
+pacf(diff(diff2_log_tfr, lag = 12), lag.max = 50)
 
 #Significant lags at 11, 12, and 13 in PACF, repeating cylical pattern, at 12, 24, etc
 
@@ -174,16 +163,6 @@ spectrum(diff_log_tlb, main = "Spectrum of Differenced Log TLB")
 
 spectrum(diff2_log_tfr, main = "Spectrum of Differenced Log TFR")
 
-
-#Traning and Testing data sets
-tlb_train <- window(tlb_ts, end = 2012)
-tlb_test  <- window(tlb_ts, start = 2013)
-
-tfr_train <- window(tfr_ts, end = 2012)
-tfr_test  <- window(tfr_ts, start = 2013)
-
-acf(diff(diff_tlb, lag = 12), lag.max = 60)
-pacf(diff(diff_tlb, lag = 12), lag.max = 60)
 
 #Fitting time series models 
 
@@ -441,7 +420,7 @@ pacf(log_tfr_cycle2$residuals, lag.max = 60)
 #ARIMA (ARIMA 1-6 no trans TLB)
 m1 <- Arima(tlb_train, order = c(11,1,4))
 
-acf(m1$residuals, lag.max = 60)
+acf(m1$residuals, lag.max = 60) #45-50 
 pacf(m1$residuals, lag.max = 60)
 
 m2 <- Arima(tlb_train, order = c(13, 1, 1))
@@ -628,19 +607,19 @@ pacf(m26$residuals, lag.max = 60)
 #log transform
 
 #ARIMA (ARIMA 27-30 log trans TFR)
-m27 <- Arima(log(tfr_train), order = c(15,1,1))
+m27 <- Arima(log(tfr_train), order = c(12,2,3))
 acf(m27$residuals, lag.max = 60)
 pacf(m27$residuals, lag.max = 60)
 
-m28 <- Arima(log(tfr_train), order = c(12,1,4))
+m28 <- Arima(log(tfr_train), order = c(13,2,3))
 acf(m28$residuals, lag.max = 60)
 pacf(m28$residuals, lag.max = 60)
 
-m29 <- Arima(log(tfr_train), order = c(13,1,3))
+m29 <- Arima(log(tfr_train), order = c(13,2,2))
 acf(m29$residuals, lag.max = 60)
 pacf(m29$residuals, lag.max = 60)
 
-m30 <- Arima(log(tfr_train), order = c(14,1,3))
+m30 <- Arima(log(tfr_train), order = c(14,2,2))
 acf(m30$residuals, lag.max = 60)
 pacf(m30$residuals, lag.max = 60)
 
@@ -648,14 +627,14 @@ pacf(m30$residuals, lag.max = 60)
 
 m31 <- Arima( 
   log(tfr_train), 
-  order = c(3,1,1), 
+  order = c(2,2,3), 
   seasonal = list(order = c(0,1,1), period = 12))
 acf(m31$residuals, lag.max = 60)
-pacf(m5$residuals, lag.max = 60)
+pacf(m31$residuals, lag.max = 60)
 
 m32 <- Arima( 
   log(tfr_train), 
-  order = c(3,1,1), 
+  order = c(3,2,2), 
   seasonal = list(order = c(1,1,0), period = 12))
 acf(m32$residuals, lag.max = 60)
 pacf(m32$residuals, lag.max = 60)
@@ -693,48 +672,142 @@ AIC(m27, m28, m29, m30)
 #SARIMA
 AIC(m31, m32)
 
-#MAE, MSE
+#MAE, MSE (RMSE^2 =MSE)
 
-fc_m1 <- 
-fc_m2 <- 
-fc_m3 <-
-fc_m4 <-
-fc_m5 <-
-fc_m6 <-
-fc_m7 <-
-fc_m8 <- 
-fc_m9 <-
-fc_m10 <-
-fc_m11 <-
-fc_m12 <-
-fc_m13 <-
-fc_m14 <-
-fc_m15 <-
-fc_m16 <-
-fc_m17 <-
-fc_m18 <-
-fc_m19 <-
-fc_m20 <-
-fc_m21 <-
-fc_m22 <-
-fc_m23 <-
-fc_m24 <-
-fc_m25 <-
-fc_m26 <-
-fc_m27 <-
-fc_m28 <-
-fc_m29 <-
-fc_m30 <-
-fc_m31 <-
-fc_m32 <-
+#TLB 
 
+fc_m1 <- forecast(m1, h = length(tlb_test))
 
-#SSE
+accuracy(fc_m1, tlb_test)
 
+fc_m2 <- forecast(m2, h = length(tlb_test))
 
+accuracy(fc_m2, tlb_test)
 
+fc_m3 <- forecast(m3, h = length(tlb_test))
 
+accuracy(fc_m3, tlb_test)
 
+fc_m4 <- forecast(m4, h = length(tlb_test))
+
+accuracy(fc_m4, tlb_test)
+
+fc_m5 <-  forecast(m5, h = length(tlb_test))
+
+accuracy(fc_m5, tlb_test)
+
+fc_m6 <- forecast(m6, h = length(tlb_test))
+
+accuracy(fc_m6, tlb_test)
+
+fc_m7 <- forecast(m7, h = length(tlb_test))
+
+accuracy(fc_m7, tlb_test)
+
+fc_m8 <-  forecast(m8, h = length(tlb_test))
+
+accuracy(fc_m8, tlb_test)
+
+fc_m9 <- forecast(m9, h = length(tlb_test))
+
+accuracy(fc_m9, tlb_test)
+
+fc_m10 <- forecast(m10, h = length(tlb_test))
+
+accuracy(fc_m10, tlb_test)
+
+#log transformation
+
+fc_m11 <- forecast(m11, h = length(tlb_test))
+
+accuracy(fc_m11, log(tlb_test))
+
+fc_m12 <- forecast(m12, h = length(tlb_test))
+
+accuracy(fc_m12, log(tlb_test))
+
+fc_m13 <- forecast(m13, h = length(tlb_test))
+
+accuracy(fc_m13, log(tlb_test))
+
+fc_m14 <- forecast(m14, h = length(tlb_test))
+
+accuracy(fc_m14, log(tlb_test))
+
+fc_m15 <-  forecast(m15, h = length(tlb_test))
+
+accuracy(fc_m15, log(tlb_test))
+
+fc_m16 <-forecast(m16, h = length(tlb_test))
+
+accuracy(fc_m16, log(tlb_test))
+
+fc_m17 <- forecast(m17, h = length(tlb_test))
+
+accuracy(fc_m17, log(tlb_test))
+
+fc_m18 <-forecast(m18, h = length(tlb_test))
+
+accuracy(fc_m18, log(tlb_test))
+
+#TFR
+
+fc_m19 <-forecast(m19, h = length(tfr_test))
+
+accuracy(fc_m19, tfr_test)
+
+fc_m20 <-forecast(m20, h = length(tfr_test))
+
+accuracy(fc_m20, tfr_test)
+
+fc_m21 <-forecast(m21, h = length(tfr_test))
+
+accuracy(fc_m21, tfr_test)
+
+fc_m22 <-forecast(m22, h = length(tfr_test))
+
+accuracy(fc_m22, tfr_test)
+
+fc_m23 <-forecast(m23, h = length(tfr_test))
+
+accuracy(fc_m23, tfr_test)
+
+fc_m24 <-forecast(m24, h = length(tfr_test))
+
+accuracy(fc_m24, tfr_test)
+
+fc_m25 <-forecast(m25, h = length(tfr_test))
+
+accuracy(fc_m25, tfr_test)
+
+fc_m26 <-forecast(m26, h = length(tfr_test))
+
+accuracy(fc_m19, tfr_test)
+  
+#Log transform
+fc_m27 <-forecast(m27, h = length(tfr_test))
+
+accuracy(fc_m27, log(tfr_test))
+
+fc_m28 <-forecast(m28, h = length(tfr_test))
+
+accuracy(fc_m28, log(tfr_test))
+
+fc_m29 <-forecast(m29, h = length(tfr_test))
+
+accuracy(fc_m29, log(tfr_test))
+
+fc_m30 <-forecast(m30, h = length(tfr_test))
+
+accuracy(fc_m30, log(tfr_test))
+
+fc_m31 <-forecast(m31, h = length(tfr_test))
+
+accuracy(fc_m31, log(tfr_test))
+
+fc_m32 <-forecast(m32, h = length(tfr_test))
+
+accuracy(fc_m32, log(tfr_test))
 
 
 #Plotting predictive forecasting to actual testing data
@@ -745,7 +818,7 @@ fc_m32 <-
 #(ARIMA 1-5 no trans TLB)
 #(SARIMA 6-10 no trans TLB)
 
-fc <- forecast(m8, h = length(tlb_test))
+fc <- forecast(m9, h = length(tlb_test))
 
 autoplot(fc) +
   autolayer(tlb_test, series = "Actual")
@@ -767,7 +840,7 @@ autoplot(fc) +
 #(19-21 arima no trans TFR)
 #(22-26 Sarima no trans TFR)
 
-fc <- forecast(m21, h = length(tfr_test))
+fc <- forecast(m22, h = length(tfr_test))
 
 autoplot(fc) +
   autolayer(tfr_test, series = "Actual")
@@ -785,7 +858,7 @@ autoplot(fc) +
 
 # Good looking prediction: 28, 31 
 
-#Compare time series models with AIC and look at the degrees of freedom, make sure final model are justified by literature
+#Compare time series models with AIC and look at the parameters, make sure final model are justified by literature
 
 
 
